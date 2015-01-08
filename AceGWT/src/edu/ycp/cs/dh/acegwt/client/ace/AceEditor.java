@@ -558,6 +558,34 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
+	 * Folds all blocks according to the folding function from the used mode.
+	 */
+	public native void foldAll() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.getSession().foldAll();
+	}-*/;
+
+	/**
+	 * Sets the folding style.
+	 * @param fstyle	the folding style.
+	 */
+	public native void setFoldingStyle(AceFoldingStyle fstyle) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var fname = fstyle.@edu.ycp.cs.dh.acegwt.client.ace.AceFoldingStyle::getName()();
+		editor.session.setFoldStyle(fname);
+    	editor.setShowFoldWidgets(fname !== "manual");
+	}-*/;
+	
+	/**
+	 * Enables fade folding widgets (invisible folding widget until your mouse goes through the gutter).
+	 * @param enable	should we enable fade folding widgets?
+	 */
+	public native void enableFadeFoldWidget(boolean enable) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.setFadeFoldWidgets(enable);
+	}-*/;
+	
+	/**
 	 * Gets all the displayed markers.
 	 * @return A Mapping between markerID and the displayed range.
 	 */
