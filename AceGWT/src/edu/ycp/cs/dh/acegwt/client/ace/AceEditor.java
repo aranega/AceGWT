@@ -188,9 +188,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * Set font size.
 	 */
 	public native void setFontSize(String fontSize) /*-{
-		var elementId = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::elementId;
-		var elt = $doc.getElementById(elementId);
-		elt.style.fontSize = fontSize;
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.setFontSize(fontSize);
 	}-*/;
 
 	/**
