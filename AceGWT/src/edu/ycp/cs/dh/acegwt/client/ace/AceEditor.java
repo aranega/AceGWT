@@ -21,6 +21,8 @@
 package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -154,7 +156,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	public native void setModeByName(String shortModeName) /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		var modeName = "ace/mode/" + shortModeName;
-		var TheMode = $wnd.require(modeName).Mode;
+		var TheMode = $wnd.ace.require(modeName).Mode;
 		editor.getSession().setMode(new TheMode());
 	}-*/;
 
@@ -568,7 +570,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * Remove all the displayed markers.
 	 */
 	public void removeAllMarkers() {
-		for (Integer id : this.markers.keySet()) {
+		Set<Integer> cpy = new HashSet<Integer>(this.markers.keySet());
+		for (Integer id : cpy) {
 			removeMarker(id);
 		}
 	}

@@ -44,7 +44,7 @@ public final class AceRange extends JavaScriptObject {
 	 * @return creates a new Range object.
 	 */
 	static native JavaScriptObject toJsObject(int startRow, int startColumn, int endRow, int endColumn) /*-{
-		var Range = $wnd.require('ace/range').Range;
+		var Range = $wnd.ace.require('ace/range').Range;
 		var range = new Range(startRow, startColumn, endRow, endColumn);
 		return range;
 	}-*/;
