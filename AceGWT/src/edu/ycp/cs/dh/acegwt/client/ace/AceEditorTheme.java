@@ -58,6 +58,7 @@ public enum AceEditorTheme {
 	TOMORROW_NIGHT_BRIGHT("tomorrow_night_bright"),
 	TOMORROW_NIGHT_EIGHTIES("tomorrow_night_eighties"),
 	TOMORROW_NIGHT("tomorrow_night"),
+	TOMORROW_NIGHT_MODDED("tomorrow_night_modded"),
 	TOMORROW("tomorrow"),
 	TWILIGHT("twilight"),
 	VIBRANT_INK("vibrant_ink"),

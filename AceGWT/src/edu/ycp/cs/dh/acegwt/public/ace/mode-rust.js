@@ -1,4 +1,4 @@
-define("ace/mode/rust_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
+ace.define("ace/mode/rust_highlight_rules",["require","exports","module","ace/lib/oop","ace/mode/text_highlight_rules"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");
@@ -17,6 +17,35 @@ var RustHighlightRules = function() {
                 next: 'pop' },
               { include: '#rust_escaped_character' },
               { defaultToken: 'string.quoted.single.source.rust' } ] },
+         {
+            stateName: "bracketedComment",
+            onMatch : function(value, currentState, stack){
+                stack.unshift(this.next, value.length - 1, currentState);
+                return "string.quoted.raw.source.rust";
+            },
+            regex : /r#*"/,
+            next  : [
+                {
+                    onMatch : function(value, currentState, stack) {
+                        var token = "string.quoted.raw.source.rust";
+                        if (value.length >= stack[1]) {
+                            if (value.length > stack[1])
+                                token = "invalid";
+                            stack.shift();
+                            stack.shift();
+                            this.next = stack.shift();
+                        } else {
+                            this.next = "";
+                        }
+                        return token;
+                    },
+                    regex : /"#*/,
+                    next  : "start"
+                }, {
+                    defaultToken : "string.quoted.raw.source.rust"
+                }
+            ]
+         },
          { token: 'string.quoted.double.source.rust',
            regex: '"',
            push: 
@@ -64,10 +93,14 @@ var RustHighlightRules = function() {
                 regex: '$',
                 next: 'pop' },
               { defaultToken: 'comment.line.double-dash.source.rust' } ] },
-         { token: 'comment.block.source.rust',
+         { token: 'comment.start.block.source.rust',
            regex: '/\\*',
+           stateName: 'comment',
            push: 
-            [ { token: 'comment.block.source.rust',
+            [ { token: 'comment.start.block.source.rust',
+                regex: '/\\*',
+                push: 'comment' },
+              { token: 'comment.end.block.source.rust',
                 regex: '\\*/',
                 next: 'pop' },
               { defaultToken: 'comment.block.source.rust' } ] } ],
@@ -90,7 +123,7 @@ oop.inherits(RustHighlightRules, TextHighlightRules);
 exports.RustHighlightRules = RustHighlightRules;
 });
 
-define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
+ace.define("ace/mode/folding/cstyle",["require","exports","module","ace/lib/oop","ace/range","ace/mode/folding/fold_mode"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../../lib/oop");
@@ -185,7 +218,7 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 });
 
-define("ace/mode/rust",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/rust_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
+ace.define("ace/mode/rust",["require","exports","module","ace/lib/oop","ace/mode/text","ace/mode/rust_highlight_rules","ace/mode/folding/cstyle"], function(require, exports, module) {
 "use strict";
 
 var oop = require("../lib/oop");

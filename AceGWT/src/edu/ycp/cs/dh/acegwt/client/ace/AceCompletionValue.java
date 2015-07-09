@@ -91,6 +91,10 @@ public class AceCompletionValue extends AceCompletion {
 		this.meta = meta;
 	}
 	
+	public String getCaption() {
+		return caption;
+	}
+	
 	/**
 	 * Convert to a native JS object in the format expected
 	 * by the Ace code completion callback.

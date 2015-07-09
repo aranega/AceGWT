@@ -21,10 +21,16 @@
 package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -36,7 +42,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
  *
  * @see <a href="http://ace.ajax.org/">Ajax.org Code Editor</a>
  */
-public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String> {
+public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String>, HasKeyDownHandlers {
 	// Used to generate unique element ids for Ace widgets.
 	private static int nextId = 0;
 
@@ -154,7 +160,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	public native void setModeByName(String shortModeName) /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		var modeName = "ace/mode/" + shortModeName;
-		var TheMode = $wnd.require(modeName).Mode;
+		var TheMode = $wnd.ace.require(modeName).Mode;
 		editor.getSession().setMode(new TheMode());
 	}-*/;
 
@@ -181,14 +187,20 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 			callback.@edu.ycp.cs.dh.acegwt.client.ace.AceEditorCallback::invokeAceCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(e);
 		});
 	}-*/;
+	
+	public native void addOnClickHandler(AceEditorCallback callback) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.on("click", function(e) {
+			callback.@edu.ycp.cs.dh.acegwt.client.ace.AceEditorCallback::invokeAceCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(e);
+		});
+	}-*/;
 
 	/**
 	 * Set font size.
 	 */
 	public native void setFontSize(String fontSize) /*-{
-		var elementId = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::elementId;
-		var elt = $doc.getElementById(elementId);
-		elt.style.fontSize = fontSize;
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.setFontSize(fontSize);
 	}-*/;
 
 	/**
@@ -248,6 +260,22 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		return new AceEditorCursorPosition((int) row, (int) column);
 	}
 	
+	public native AceToken getTokenAt(int row, int column) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var token = editor.getSession().getTokenAt(row, column);
+		return token && @edu.ycp.cs.dh.acegwt.client.ace.AceToken::create(ILjava/lang/String;Ljava/lang/String;)(
+			token.start,
+			token.type,
+			token.value
+		);
+		
+	}-*/;
+	
+	public native AceRange highlightLines(int startRow, int endRow) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		return editor.getSession().highlightLines(startRow, endRow, null, false);
+	}-*/;
+	
 	/**
 	 * Gets the given document position as a zero-based index.
 	 * 
@@ -306,6 +334,39 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	public native void gotoLine(int line) /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		editor.gotoLine(line);
+	}-*/;
+	
+	/**
+	 * Go to given line, column.
+	 *
+	 * @param line 	the line to go to
+	 * @param col	the column to go to
+	 */
+	public native void gotoLine(int line, int col) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.gotoLine(line, col);
+	}-*/;
+	
+	public native void selectWord() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.getSelection().selectWord();
+	}-*/;
+	
+	/**
+	 * Go to given line, column.
+	 *
+	 * @param line 	the line to go to
+	 * @param col	the column to go to
+	 * @param animate if the scroll should be animated
+	 */
+	public native void gotoLine(int line, int col, boolean animate) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.gotoLine(line, col, animate);
+	}-*/;
+	
+	public native void setAnimatedScroll(boolean animate) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.setAnimatedScroll(animate);
 	}-*/;
 
 	/**
@@ -557,6 +618,48 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 	
 	/**
+	 * Folds all blocks according to the folding function from the used mode.
+	 */
+	public native void foldAll() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.getSession().foldAll();
+	}-*/;
+	
+	public native void unfoldAll() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.getSession().unfold();
+	}-*/;
+
+	/**
+	 * Sets the folding style.
+	 * @param fstyle	the folding style.
+	 */
+	public native void setFoldingStyle(AceFoldingStyle fstyle) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var fname = fstyle.@edu.ycp.cs.dh.acegwt.client.ace.AceFoldingStyle::getName()();
+		editor.session.setFoldStyle(fname);
+    	editor.setShowFoldWidgets(fname !== "manual");
+	}-*/;
+	
+	/**
+	 * Enables fade folding widgets (invisible folding widget until your mouse goes through the gutter).
+	 * @param enable	should we enable fade folding widgets?
+	 */
+	public native void enableFadeFoldWidget(boolean enable) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.setFadeFoldWidgets(enable);
+	}-*/;
+	
+	/**
+	 * 
+	 * @param enable
+	 */
+	public native void enableBehaviours(boolean enable) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.setBehavioursEnabled(enable);
+	}-*/;
+	
+	/**
 	 * Gets all the displayed markers.
 	 * @return A Mapping between markerID and the displayed range.
 	 */
@@ -568,10 +671,39 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * Remove all the displayed markers.
 	 */
 	public void removeAllMarkers() {
-		for (Integer id : this.markers.keySet()) {
+		Set<Integer> cpy = new HashSet<Integer>(this.markers.keySet());
+		for (Integer id : cpy) {
 			removeMarker(id);
 		}
 	}
+	
+	public native void addShortcutsMenu() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var config = $wnd.ace.require("ace/config");
+		config.loadModule("ace/ext/keybinding_menu", function(module) {
+        	module.init(editor);
+    	});
+	}-*/;
+	
+	public native void addSettingsMenu() /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var config = $wnd.ace.require("ace/config");
+		editor.commands.addCommand({
+			name: "showSettingsMenu",
+			bindKey: {win: "Ctrl-shift-h", mac: "Command-shift-h"},
+			exec: function(editor) {
+    				config.loadModule("ace/ext/settings_menu", function(module) {
+        				module.init(editor);
+        				editor.showSettingsMenu();
+    				});
+				}
+			});
+	}-*/;
+	
+	public native String getTextRange(AceRange range) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		return editor.getSession().getTextRange(range);
+	}-*/;
 	
 	private void addMarker(int id, AceRange range) {
 		markers.put(id, range);
@@ -580,6 +712,10 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	private void removeRegisteredMarker(int id) {
 		AceRange range = markers.remove(id);
 		range.detach();
+	}
+	
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
+	    return addDomHandler(handler, KeyDownEvent.getType());
 	}
 	
 	private static AceCompletionCallback wrapCompletionCallback(JavaScriptObject jsCallback) {

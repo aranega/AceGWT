@@ -20,12 +20,17 @@
 
 package edu.ycp.cs.dh.acegwt.client.ace;
 
+
 /**
  * Enumeration for ACE editor modes.
  * Note that the corresponding .js file must be loaded
  * before a mode can be set.
  */
 public enum AceEditorMode {
+	/** Expression Language (EL) */
+	EXPRESSION_LANGUAGE("el"),
+	/** Acceleo (MTL) */
+	ACCELEO("acceleo"),
 	/** ABAP (Advanced Business Application Programming). */
 	ABAP("abap"),
 	/** Actionscript. */
@@ -262,9 +267,26 @@ public enum AceEditorMode {
 	}
 	
 	/**
-	 * @return mode name (e.g., "java" for Java mode)
+	 * @return mode name (e.g., "java" for Jav mode
 	 */
 	public String getName() {
 		return name;
 	}
+
+	public static AceEditorMode getModeForPath(String path) {
+		String modeName = nativeGetModeForPath(path);
+		for(AceEditorMode mode : values()) {
+			if(mode.getName().equalsIgnoreCase(modeName)) {
+				return mode;
+			}
+		}
+
+		return null;
+	}
+
+	public static native String nativeGetModeForPath(String path) /*-{
+		var modeList = $wnd.ace.require('ace/ext/modelist');
+		var m = modeList.getModeForPath(path);
+		return m && m.name;
+	}-*/;
 }
