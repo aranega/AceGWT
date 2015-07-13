@@ -28,8 +28,11 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.HasKeyPressHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.Composite;
@@ -42,7 +45,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
  *
  * @see <a href="http://ace.ajax.org/">Ajax.org Code Editor</a>
  */
-public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String>, HasKeyDownHandlers {
+public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String>, HasKeyDownHandlers, HasKeyPressHandlers {
 	// Used to generate unique element ids for Ace widgets.
 	private static int nextId = 0;
 
@@ -716,6 +719,11 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
 	    return addDomHandler(handler, KeyDownEvent.getType());
+	}
+	
+	@Override
+	public HandlerRegistration addKeyPressHandler(KeyPressHandler handler) {
+		return addDomHandler(handler, KeyPressEvent.getType());
 	}
 	
 	private static AceCompletionCallback wrapCompletionCallback(JavaScriptObject jsCallback) {
