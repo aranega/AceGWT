@@ -1,4 +1,5 @@
 /AceGWT/war/WEB-INF/classes
+/AceGWT/.settings/
 *.swp
 /AceGWT/war/
 /AceGWTDemo/war/
