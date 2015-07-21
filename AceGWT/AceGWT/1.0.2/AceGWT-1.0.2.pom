@@ -53,6 +53,7 @@
 							<includes><include>**/*</include></includes>
 							<repositoryName>AceGWT</repositoryName>
 							<repositoryOwner>aranega</repositoryOwner>
+							<merge>true</merge>
 					</configuration>
 					<executions>
 						<execution>
