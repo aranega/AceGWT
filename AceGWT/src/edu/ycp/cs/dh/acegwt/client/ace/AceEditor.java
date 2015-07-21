@@ -144,6 +144,27 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		editor.setTheme("ace/theme/" + themeName);
 	}-*/;
+	
+	
+	/**
+	 * Loads mode even if the mode is not declared in HTML page.
+	 * @param modename the name of the mode (e.g., "java")
+	 */
+	public native void loadMode(String modename) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		var modepath = "ace/mode/" + modename;
+		if ($wnd.ace.require(modepath)) {
+		var TheMode = $wnd.ace.require(modepath).Mode;
+			editor.getSession().setMode(new TheMode());
+			return;
+		}
+	
+		var config = $wnd.ace.require("ace/config");
+		config.loadModule(modepath, function(module) {
+			var TheMode = $wnd.ace.require(modepath).Mode;
+			editor.getSession().setMode(new TheMode());
+		});
+	}-*/;
 
 	/**
 	 * Set the mode.
