@@ -27,6 +27,8 @@ package edu.ycp.cs.dh.acegwt.client.ace;
  * before a mode can be set.
  */
 public enum AceEditorMode {
+	/** FEEL (Friendly Enough Expression Language */
+	FRIENDLY_ENOUGH_EXPRESSION_LANGUAGE("feel"),
 	/** Expression Language (EL) */
 	EXPRESSION_LANGUAGE("el"),
 	/** Acceleo (MTL) */
