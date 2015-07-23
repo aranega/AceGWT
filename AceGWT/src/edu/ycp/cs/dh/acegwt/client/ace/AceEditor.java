@@ -828,9 +828,9 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * Remove all the displayed markers.
 	 */
 	public void removeAllMarkers() {
-		Iterator<Integer> iter = this.markers.keySet().iterator(); 
+		Iterator<Integer> iter = this.markers.keySet().iterator();
 		while (iter.hasNext()) {
-			iter.remove();
+			removeMarker(iter.next());
 		}
 	}
 	
