@@ -21,8 +21,9 @@
 package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -828,9 +829,9 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * Remove all the displayed markers.
 	 */
 	public void removeAllMarkers() {
-		Iterator<Integer> iter = this.markers.keySet().iterator();
-		while (iter.hasNext()) {
-			removeMarker(iter.next());
+		Set<Integer> cpy = new HashSet<Integer>(this.markers.keySet());
+		for (Integer id : cpy) {
+			removeMarker(id);
 		}
 	}
 	
