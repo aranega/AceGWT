@@ -787,6 +787,16 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		editor.getSession().unfold();
 	}-*/;
+	
+
+	/**
+	 * Displays/hides the line number in the gutter
+	 * @param visible
+	 */
+	public native void displayLineNumbers(boolean visible) /*-{
+		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+		editor.renderer.setOption('showLineNumbers', visible);
+	}-*/;
 
 	/**
 	 * Sets the folding style.
