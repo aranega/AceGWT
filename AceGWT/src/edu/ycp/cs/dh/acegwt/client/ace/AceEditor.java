@@ -20,10 +20,10 @@
 
 package edu.ycp.cs.dh.acegwt.client.ace;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -46,7 +46,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
  *
  * @see <a href="http://ace.ajax.org/">Ajax.org Code Editor</a>
  */
-public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String>, HasKeyDownHandlers, HasKeyPressHandlers {
+public class AceEditor extends Composite implements RequiresResize, HasText, TakesValue<String>, HasKeyDownHandlers, HasKeyPressHandlers  {
 	// Used to generate unique element ids for Ace widgets.
 	private static int nextId = 0;
 
@@ -243,11 +243,22 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		return editor.getFontSize();
 	}-*/;
-
+	
 	/**
 	 * Set font size.
+	 * @param fontSize the font size to set, e.g., "16px"
 	 */
 	public native void setFontSize(String fontSize) /*-{
+		var elementId = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::elementId;
+		var elt = $doc.getElementById(elementId);
+		elt.style.fontSize = fontSize;
+	}-*/;
+
+	/**
+	 * Set integer font size.
+	 * @param fontSize the font size to set, e.g., 16
+	 */
+	public native void setFontSize(int fontSize) /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		editor.setFontSize(fontSize);
 	}-*/;
@@ -488,7 +499,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}-*/;
 
 	/**
-	 * Add an annotation to a the local <code>annotations</code> JsArray<AceAnnotation>, but does not set it on the editor
+	 * Add an annotation to a the local <code>annotations</code> JsArray&lt;AceAnnotation&gt;, but does not set it on the editor
 	 *
 	 * @param row to which the annotation should be added
 	 * @param column to which the annotation applies
@@ -511,7 +522,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 
 
 	/**
-	 * Clear any annotations from the editor and reset the local <code>annotations</code> JsArray<AceAnnotation>
+	 * Clear any annotations from the editor and reset the local <code>annotations</code> JsArray&lt;AceAnnotation&gt;
 	 */
 	public native void clearAnnotations() /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
@@ -685,9 +696,9 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	
 	/**
-	 * Removes all existing completers from the langtools<br/><br/>
+	 * Removes all existing completers from the langtools<br><br>
 	 * This can be used to disable all completers including local completers, which can be very useful
-	 * when completers are used on very large files (as the local completer tokenizes every word to put in the selected list).<br/><br/> 
+	 * when completers are used on very large files (as the local completer tokenizes every word to put in the selected list).<br><br> 
 	 * <strong>NOTE:</strong> This method may be removed, and replaced with another solution. It works at point of check-in, but treat this as unstable for now.
 	 */
 	public native static void removeAllExistingCompleters() /*-{
@@ -829,18 +840,18 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	
 	/**
 	 * Gets all the displayed markers.
-	 * @return A Mapping between markerID and the displayed range.
+	 * @return An unmodifiable Mapping between markerID and the displayed range.
 	 */
-	public HashMap<Integer, AceRange> getMarkers() {
-		return this.markers;
+	public Map<Integer, AceRange> getMarkers() {
+		return Collections.unmodifiableMap(this.markers);
 	}
 	
 	/**
 	 * Remove all the displayed markers.
 	 */
 	public void removeAllMarkers() {
-		Set<Integer> cpy = new HashSet<Integer>(this.markers.keySet());
-		for (Integer id : cpy) {
+    Integer[] ids = this.markers.keySet().toArray(new Integer[this.markers.size()]);
+		for (Integer id : ids) {
 			removeMarker(id);
 		}
 	}
@@ -881,7 +892,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		AceRange range = markers.remove(id);
 		range.detach();
 	}
-
+	
 	/**
 	 * Prepare a wrapper around Ace Selection object.
 	 * @return a wrapper around Ace Selection object
@@ -891,7 +902,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 			selection = new AceSelection(getSelectionJS());
 		return selection;
 	}
-
+	
 	private native JavaScriptObject getSelectionJS() /*-{
 		var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 		return editor.getSession().getSelection();
